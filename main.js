@@ -1,48 +1,57 @@
-//Identifico como clase a ALUMNO, cuyas propiedades son nombre y notas\\
-class Alumno {
-    constructor (nombre, notas){
-        this.nombre = nombre;
-        this.notas = notas;
-    }     
+mostrarListado()
+function agregarAlumno (){
+    let nombre = document.getElementById("nombre").value
+    let nota1 = document.getElementById("nota1").value
+    let nota2 = document.getElementById("nota2").value
+    if (!nombre || !nota1 || !nota2) {
+        return 
+    }
+    let alumnos = JSON.parse(localStorage.getItem("alumnos"))
+    if (!alumnos) {
+        const alumno = {
+            nombre,
+            nota1,
+            nota2,
+        }
+        localStorage.setItem("alumnos", JSON.stringify([alumno]))
+    }
+    else {
+        const alumno = {
+            nombre,
+            nota1,
+            nota2,
+        }
+        alumnos.push(alumno)
+        localStorage.setItem("alumnos", JSON.stringify(alumnos))
+    }
+    document.getElementById("listado").innerHTML= ""
+    mostrarListado()
+    
 }
-
-//Realizo un Array para almacenar mis alumnos con sus respectivos parámetros, en los cuales encontraremos al nombre, y dentro de las notas, las correspondientes tanto al primer parcial como al segundo parcial. Dentro del Array tan sólo por el orden de ingreso se identifica a la primera como nota primer parcial, y a la segunda como nota segundo parcial.\\
-
-const alumnos = [
-    new Alumno ("Manuel González Alayes", [8, 9]),
-    new Alumno ("Alejandro Wilcke", [10, 9]),
-    new Alumno ("Lionel Messi", [10, 10]),
-    new Alumno ("Cristina Fernández", [1, 1]),
-    new Alumno ("Alberto Fernández", [4, 3]),
-    new Alumno ("Fernando Peña", [6, 6]),
-]
-
-// En caso de querer consultar algún alumno del listado dentro del array dentro de la lista 0-5. Ingresamos en la siguiente fórmula el nro. de alumno. Por ejemplo, alumno 2 -Lionel Messi.
-// console.log (alumnos[2])
-
-// El forEach recorre el Array de alumnos, aplicando esa function a los alumnos de dicho array
-alumnos.forEach(function (alumno,index) {
-    const promedio = calcularPromedio (alumno.notas[0], alumno.notas[1])
-
-    if(promedio>=7){
-        console.log ("El estudiante ha promocionado la asignatura y por lo tanto no debe rendir final")
+function mostrarListado (){
+    let lista = document.getElementById("listado")
+    let alumnos = JSON.parse(localStorage.getItem("alumnos"))
+    if (alumnos) {
+        alumnos.forEach( function (alumno) {
+            let li = document.createElement ("li")
+            let promedio = calcularPromedio (alumno.nota1,alumno.nota2)
+            console.log (promedio)
+            if(promedio>=7){
+                li.textContent = alumno.nombre + " ha promocionado la asignatura y por lo tanto no debe rendir final"
+            }
+            else if(promedio >=4 && promedio<7){
+                li.textContent = alumno.nombre + " ha aprobado la asignatura pero aún debe rendir final"
+            }
+            else if(promedio<4){
+                li.textContent = alumno.nombre + " ha desaprobado la asignatura y por lo tanto debe recursar"
+            }
+            lista.appendChild(li)
+        })
     }
-    else if(promedio >=4 && promedio<7){
-        console.log ("El estudiante ha aprobado la asignatura pero aún debe rendir final")
-    }
-    else if(promedio<4){
-        console.log ("El estudiante ha desaprobado la asignatura y por lo tanto debe recursar")
-    }
-});
+}
 
 function calcularPromedio (nota1 , nota2){
-    return ((nota1 + nota2) /2)
+    return (Number(nota1)+Number(nota2)) /2
 }
 
-    console.log ("En esta asignatura no se permite rendir examen recuperatorio. A partir del promedio de notas de los parciales del estudiante, será posible determinar si el estudiante ha promocionado la asignatura y por lo tanto no debe rendir final; si el estudiante ha aprobado la asignatura pero aún debe rendir final; o si el estudiante ha desaprobado la asignatura y por lo tanto debe recursar")
-
-
-// console.log("El estudiante " + nombreAlumnoNuevo +" ha obtenido una nota de " +notaPrimerParcial, 
-// " en su primer parcial. Mientras que en su segundo parcial obtuvo un " +notaSegundoParcial+ 
-// ". Esto significa que la nota promedio resultante de ambos parciales es un " +promedio + ".")
-
+//[Manuel González Alayes] obtuvo un promedio de [7]. Por lo tanto, [ha promocionado la asignatura y no deben rendir final.]
